@@ -1,0 +1,41 @@
+
+
+FROM node:alpine AS development
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY package-lock.json ./
+COPY tsconfig.json tsconfig.json
+COPY nest-cli.json nest-cli.json
+
+RUN npm install -g pnpm
+
+RUN pnpm install
+
+COPY apps/admin apps/admin
+COPY libs libs
+
+RUN cd apps/admin && pnpm install
+
+RUN pnpm run build admin
+
+FROM node:alpine AS production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY package-lock.json ./
+
+RUN npm install -g pnpm
+
+RUN pnpm install --prod
+
+COPY --from=development /usr/src/app/dist ./dist
+
+CMD ["node", "dist/apps/admin/main"]
+
+

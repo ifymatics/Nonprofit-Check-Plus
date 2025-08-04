@@ -1,0 +1,73 @@
+results-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .result-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h3 {
+        margin: 0;
+        color: #1976d2;
+      }
+
+      .status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.875rem;
+        font-weight: 500;
+
+        &.compliant {
+          background-color: #e8f5e9;
+          color: #2e7d32;
+        }
+
+        &.non-compliant {
+          background-color: #ffebee;
+          color: #c62828;
+        }
+      }
+    }
+
+    .result-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+
+      .detail-item {
+        .label {
+          font-size: 0.875rem;
+          color: #616161;
+          margin-bottom: 0.25rem;
+        }
+
+        .value {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #757575;
+  }
+}

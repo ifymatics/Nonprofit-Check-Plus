@@ -1,0 +1,268 @@
+# version: '3.8'
+
+# services:
+#   db-init:
+#     build:
+#       context: .
+#       dockerfile: ./docker/db-init.Dockerfile
+#     env_file: ./apps/api-gateway/.env
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+
+#   api-gateway:
+#     build:
+#       context: .
+#       dockerfile: ./apps/api-gateway/Dockerfile
+#       target: development
+#     command: pnpm run start:dev api-gateway
+#     env_file:
+#       - ./apps/api-gateway/.env
+#     ports:
+#       - '3000:3000'
+#     volumes:
+#       - .:/usr/src/app
+#     depends_on:
+#       - auth
+#       - kafka
+#       - redis
+#       - postgres
+
+#   auth:
+#     build:
+#       context: .
+#       dockerfile: ./apps/auth/Dockerfile
+#       target: development
+#     command: pnpm run start:dev auth
+#     env_file:
+#       - ./apps/auth/.env
+#     ports:
+#       - '4001:4001'
+#     volumes:
+#       - .:/usr/src/app
+#     depends_on:
+#       - kafka
+#       - redis
+#       - postgres
+
+#   search:
+#     build:
+#       context: .
+#       dockerfile: ./apps/search/Dockerfile
+#       target: development
+#     command: pnpm run start:dev search
+#     env_file:
+#       - ./apps/search/.env
+#     volumes:
+#       - .:/usr/src/app
+#     depends_on:
+#       - kafka
+#       - redis
+#       - postgres
+
+#   # To enable admin service, remove comment and optionally use `--profile admin`
+#   admin:
+#     build:
+#       context: .
+#       dockerfile: ./apps/admin/Dockerfile
+#       target: development
+#     command: pnpm run start:dev admin
+#     env_file:
+#       - ./apps/admin/.env
+#     volumes:
+#       - .:/usr/src/app
+#     depends_on:
+#       - kafka
+#       - redis
+#       - postgres
+#     profiles:
+#       - admin
+
+#   zookeeper:
+#     image: bitnami/zookeeper:latest
+#     container_name: zookeeper
+#     ports:
+#       - '2181:2181'
+#     environment:
+#       - ALLOW_ANONYMOUS_LOGIN=yes
+
+#   kafka:
+#     image: bitnami/kafka:latest
+#     container_name: kafka
+#     ports:
+#       - '9092:9092'
+#     environment:
+#       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#       - ALLOW_PLAINTEXT_LISTENER=yes
+#       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+#       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+#     depends_on:
+#       - zookeeper
+
+#   postgres:
+#     image: postgres:15
+#     restart: always
+#     ports:
+#       - '5432:5432'
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: nonprofit_db
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ['CMD-SHELL', 'pg_isready -U postgres']
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+
+#   redis:
+#     image: redis:7
+#     ports:
+#       - '6379:6379'
+
+# volumes:
+#   pgdata:
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  # zookeeper:
+  #   image: bitnami/zookeeper:latest
+  #   container_name: zookeeper
+  #   ports:
+  #     - '2181:2181'
+  #   environment:
+  #     - ALLOW_ANONYMOUS_LOGIN=yes
+  #   volumes:
+  #     - zookeeper_data:/bitnami/zookeeper
+
+  # kafka:
+  #   image: bitnami/kafka:latest
+  #   container_name: kafka
+  #   ports:
+  #     - '9092:9092'
+  #   environment:
+  #     - KAFKA_BROKER_ID=1
+  #     - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  #   depends_on:
+  #     - zookeeper
+  #   volumes:
+  #     - kafka_data:/bitnami/kafka
+
+  db-init-auth:
+    build:
+      context: .
+      dockerfile: ./docker/db-init.Dockerfile
+    env_file: ./apps/auth/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  db-init-search:
+    build:
+      context: .
+      dockerfile: ./docker/db-init.Dockerfile
+    env_file: ./apps/search/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev api-gateway
+    env_file:
+      - ./apps/api-gateway/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - auth
+
+      - redis
+      - postgres
+
+  auth:
+    container_name: auth
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: pnpm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    ports:
+      - '4001:4001'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+      - postgres
+
+  search:
+    container_name: search
+    build:
+      context: .
+      dockerfile: ./apps/search/Dockerfile
+      target: development
+    command: pnpm run start:dev search
+    env_file:
+      - ./apps/search/.env
+    ports:
+      - '4003:4003'
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+      - postgres
+
+  nonprofit-frontend:
+    container_name: nonprofit-frontend
+    build:
+      context: ./nonprofit-frontend
+      dockerfile: Dockerfile
+    ports:
+      - '4200:80'
+    depends_on:
+      - api-gateway
+    restart: always
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    volumes:
+      - ./nonprofit-frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+
+volumes:
+  pgdata:
+  # kafka_data:
+  # zookeeper_data:
