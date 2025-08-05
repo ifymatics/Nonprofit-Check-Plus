@@ -24,12 +24,10 @@ export class SearchService {
     organizationName?: string;
     userId?: string;
   }) {
-    console.log('HITTING SEARCHservice searchNonprofit( )method: ', input);
     try {
       const result = await this.packmanClient.search(input);
-      console.log(result);
 
-      await this.repo.save({
+      this.repo.save({
         query: input.ein || input.organizationName,
         result,
         userId: input.userId ? input.userId : undefined,

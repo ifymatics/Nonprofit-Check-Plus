@@ -37,7 +37,7 @@ export class SearchHistory {
   @Column({ type: 'jsonb' })
   result: any;
 
-  @Column()
+  @Column({ nullable: true })
   userId: string;
 
   @CreateDateColumn()

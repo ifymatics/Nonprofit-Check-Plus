@@ -13,7 +13,7 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.TCP,
     options: {
-      host: SEARCH_SERVICE, //'0.0.0.0',
+      host: /*"SEARCH_SERVICE,*/ 'localhost',
       port: parseInt(process.env.TCP_PORT || '4003'),
     },
   });

@@ -15,10 +15,15 @@ export class SearchController {
       userId?: string;
     },
   ) {
-    console.log('HITTING SEARCH SEARCH method: ', payload);
     const { ein, organizationName, userId } = payload;
 
-    return this.service.searchNonprofit({ ein, organizationName, userId });
+    const result = await this.service.searchNonprofit({
+      ein,
+      organizationName,
+      userId,
+    });
+    console.log('HITTING SEARCH SEARCH method: ', result);
+    return result;
   }
 
   @MessagePattern({ cmd: 'search-history' })
