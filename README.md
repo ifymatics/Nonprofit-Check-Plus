@@ -7,17 +7,13 @@ Nonprofit Check Plus is a full-stack microservice-based application that helps m
 ## 📁 Project Structure
 
 non-profit/
-├── api-gateway/ # API Gateway service (NestJS)
-├── auth-service/ # Auth and user management (NestJS)
-├── admin-service/ # Admin dashboard and analytics (NestJS)
-├── nonprofit-service/ # Nonprofit registration and approval (NestJS)
-├── nonprofit-frontend/ # Angular frontend (inside project root)
-├── docker-compose.yml # Docker orchestration
-└── README.md # Project documentation
-
-yaml
-Copy
-Edit
+├── api-gateway/
+├── auth-service/
+├── admin-service/
+├── nonprofit-service/
+├── nonprofit-frontend/
+├── docker-compose.yml
+└── README.md
 
 ---
 
@@ -37,57 +33,55 @@ Edit
 - **UI Library**: Angular Material + SCSS
 - **Location**: `nonprofit-frontend/` (inside this repo)
 
----
-
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
-```bash
-git clone https://github.com/yourusername/non-profit.git
-cd non-profit
-2. Set environment variables
-Create a .env file at the root or within each service:
+- git clone hhttps://github.com/ifymatics/Nonprofit-Check-Plus.git
 
-env
-Copy
-Edit
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=nonprofit_db
-KAFKA_BROKER=kafka:9092
-REDIS_HOST=redis
-3. Start all services with Docker
-bash
-Copy
-Edit
-docker-compose up --build
-Access the Angular frontend at:
+- cd non-profit
+
+### 2. Set environment variables
+
+- Create a .env file within each service root using a sample of .env.example
+
+3. ## Start all services with Docker
+
+- docker-compose build
+
+- docker-compose up
+
+- Access the Angular frontend at (Check your terminal logs and ensure the three main services are running before sending any request):
+
 👉 http://localhost:4200
 
-🧱 Microservice Overview
-🔐 Auth Service
-User registration & login
+## Microservice Overview
 
-JWT authentication
+🔐 # Auth Service
 
-Kafka event on signup
+- User registration & login
 
-TCP endpoint for user data
+- JWT authentication
 
-🛠️ Admin Service
-Approve/block users and nonprofits
+- Kafka event on signup (Configured but commented as there no sending of email confirmation)
 
-Fetch analytics via TCP from other services
+- TCP endpoint for user data
 
-Kafka event emitter for approval notifications
+🛠️## Admin Service (Not implemented )
 
-🏢 Nonprofit Service
-Nonprofit registration and verification
+- Approve/block users and nonprofits
 
-Admin approval workflow
+- Fetch analytics via TCP from other services
 
-Search and filter capabilities
+- Kafka event emitter for approval notifications
+
+🏢 # Nonprofit Service
+
+- Nonprofit registration and verification
+
+- Admin approval workflow(Not implemented)
+
+- Search and filter capabilities
 
 🌐 API Gateway
 Central entry point for frontend requests
@@ -97,44 +91,39 @@ TCP communication with all backend services
 Centralized JWT guard
 
 🧪 Frontend (nonprofit-frontend/)
-bash
-Copy
-Edit
+
 cd nonprofit-frontend
 npm install
 ng serve
 Runs at: http://localhost:4200
 
 📬 Kafka Topics
-Topic	Producer	Consumer	Description
-user.signup	auth-service	notification-service	Send welcome or verify email
-nonprofit.created	nonprofit-service	admin-service	Notify admin of new registration
-nonprofit.approved	admin-service	notification-service	Notify user of approval
+Topic Producer Consumer Description
+user.signup auth-service notification-service Send welcome or verify email
+nonprofit.created nonprofit-service admin-service Notify admin of new registration
+nonprofit.approved admin-service notification-service Notify user of approval
 
 ✅ Testing
 Each service includes support for unit and end-to-end testing with Jest.
 
-bash
-Copy
-Edit
-cd auth-service
+cd auth
 npm run test
-npm run test:e2e
+
 🔐 Security Features
+
 JWT authentication
 
 Role-based access
 
-Email verification (via Kafka + notification-service)
+Email verification (via Kafka + notification-service not implemented)
 
 Internal-only Kafka topics for microservices
 
 🐞 Troubleshooting
 TCP not working?
 
-Make sure microservices use host: '0.0.0.0' in main.ts
-
-Use service names (e.g., auth-service) in clients—not localhost
+Make sure microservices use host in main.ts is set to service name (eg auth service name is "auth")
+Use service names (e.g., auth-service is "auth", search service name is "search and api-gateway service name is "api-gateway")
 
 Kafka not working?
 
@@ -155,10 +144,23 @@ Add cron-service for scheduled jobs (e.g., weekly reports)
 
 Production-ready Dockerfile for frontend
 
-CI/CD pipeline (GitHub Actions)
+### Ruunning on local machine without Docker
 
-👨‍💻 Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss.
+- 1.  change "host" from service name to "localhost"(
+
+          const microserviceTcp = app.connectMicroservice<MicroserviceOptions>({
+          transport: Transport.TCP,
+          options: {
+            host:'127.0.0.1',
+            port: 4001, //parseInt('4001'),
+          },
+
+      });
+      )
+
+- 2.(a) run the following in inside each of the services' folder E.g. npm run start:dev api-gateway , (b) npm run start:dev auth, (c)npm run start:dev search
+
+- 3 go inside nonprofit-frontend and run: ng serve and access the browser in http://localhost:4200
 
 📝 License
 MIT License. See LICENSE file for details.
@@ -166,4 +168,7 @@ MIT License. See LICENSE file for details.
 📫 Contact
 Built with ❤️ by Ifeanyi Okorie
 GitHub: @ifymatics
+
+```
+
 ```
