@@ -29,5 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
+  await app.init();
+  console.log('✅ Api-GatewayService is running...');
 }
 bootstrap();

@@ -51,7 +51,7 @@ non-profit/
 
 - docker-compose up
 
-- Access the Angular frontend at (Check your terminal logs and ensure the three main services are running before sending any request):
+- Access the Angular frontend at (Check your terminal logs and ensure the three main services are running before sending any request Look out for logs like: ✅ SearchService is running..., ✅ Api-GatewayService is running..., ✅ AuthService is running...):
 
 👉 http://localhost:4200
 

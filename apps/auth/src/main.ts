@@ -45,7 +45,8 @@ async function bootstrap() {
   app.useGlobalPipes(new MicroserviceValidationPipe());
   await app.startAllMicroservices();
 
-  console.log('Auth service running...');
+  await app.init();
+  console.log('✅ Auth MicroService is running...');
 }
 
 bootstrap();
