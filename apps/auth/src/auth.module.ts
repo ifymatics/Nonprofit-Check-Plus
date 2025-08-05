@@ -72,7 +72,7 @@ import { AUTH_SERVICE } from '@app/shared';
         name: AUTH_SERVICE, // TCP identifier
         transport: Transport.TCP,
         options: {
-          host: '127.0.0.1',
+          host: AUTH_SERVICE, //'127.0.0.1',
           port: parseInt('4001'),
         },
       },

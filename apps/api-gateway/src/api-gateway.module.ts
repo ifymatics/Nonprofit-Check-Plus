@@ -52,7 +52,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: ADMIN_SERVICE,
         transport: Transport.TCP,
         options: {
-          host: /*ADMIN_SERVICE,*/ process.env.ADMIN_HOST || 'localhost',
+          host: ADMIN_SERVICE, //process.env.ADMIN_HOST || 'localhost',
           port: parseInt(process.env.ADMIN_PORT || '4002'),
         },
       },
@@ -60,7 +60,7 @@ import { JwtModule } from '@nestjs/jwt';
         name: SEARCH_SERVICE,
         transport: Transport.TCP,
         options: {
-          host: /*SEARCH_SERVICE, */ process.env.SEARCH_HOST || 'localhost',
+          host: SEARCH_SERVICE, //process.env.SEARCH_HOST || 'localhost',
           port: parseInt(process.env.SEARCH_PORT || '4003'),
         },
       },
